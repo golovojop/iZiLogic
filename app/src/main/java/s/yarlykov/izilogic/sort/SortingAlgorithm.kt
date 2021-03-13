@@ -5,7 +5,11 @@ abstract class SortingAlgorithm(val rawData: Array<Int>) {
     protected var iterations = 0
     private var swaps = 0
 
-    abstract fun sort(index : Int)
+    open fun sort(index: Int) {
+    }
+
+    open fun sort(low: Int, high: Int) {
+    }
 
     fun swap(from: Int, to: Int) {
         rawData[from] = rawData[to].also { rawData[to] = rawData[from] }
