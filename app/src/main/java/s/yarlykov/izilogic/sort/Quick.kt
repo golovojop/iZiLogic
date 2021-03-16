@@ -2,9 +2,9 @@ package s.yarlykov.izilogic.sort
 
 class Quick(rawData: Array<Int>) : SortingAlgorithm(rawData) {
 
-    override fun sort(low: Int, high : Int) {
+    override fun sort(low: Int, high: Int) {
 
-        if(low >= high) return
+        if (low >= high) return
 
         val pivotIndex = low + (high - low) / 2
         val pivot = rawData[pivotIndex]
@@ -12,21 +12,43 @@ class Quick(rawData: Array<Int>) : SortingAlgorithm(rawData) {
         var i = low
         var j = high
 
+        /**
+         * i и j движутся навстречу и нужно чтобы они "прошли мимо". Пройдя мимо каждый из них
+         * попадает на чужую территорию. То есть все arr[j] становятся меньше пивота (и поэтому j
+         * останавливается), а все arr[i] становятся больше пивота (и i тоже останавливается).
+         *
+         * Это означает окончание внешнего while и требуется дальнейшее разбиения на подмассивы.
+         * При этом для новых подмассивов текущий j служит верхней границей, а i нижней.
+         *
+         * NOTE: В случае когда i и j "встретились" на пивоте необходимо выполнить "пустой swap",
+         * чтобы они прошли мимо. Кстати, в этом случае пивот остается на своем месте в массиве
+         * потому что слева от него все меньшие, а справа все большие. И больше он не участвует
+         * в сортировке.
+         *
+         * NOTE: Смысл "пройти мимо" в том, чтобы гарантированно получить подмассивы с валидными
+         * элементами, то есть слева окажется всё, что не превышает пивот, а справа всё что не
+         * меньше пивота. Сам пивот может залететь в любой из массивов или не попасть
+         * ни в один из них, если i и j на нем встретились.
+         */
         while (i < j) {
+            iterations++
             while (rawData[i] < pivot) i++
             while (rawData[j] > pivot) j--
-            swap(i, j)
+            if (i <= j) swap(i++, j--)
         }
 
-        sort(low, pivotIndex)
-        sort(pivotIndex + 1, high)
+        /**
+         * При разделении на подмассивы сумма их длин должна быть меньше или равна длине
+         * разделяемого массива: (subArrA.size + subArrB.size) <= currentArray.size
+         */
+        if (low < j) sort(low, j)
+        if (high > i) sort(i, high)
     }
-
 }
 
 fun main() {
 
-    Quick(arrayOf(20, 4, 81, 5, 35, 117, 99, 1, 72)).run {
+    Quick(arrayOf(20, 4, 81, 5, 35, 117, 99, 1, 72, 6, 76)).run {
         sort(0, rawData.lastIndex)
         print()
     }
