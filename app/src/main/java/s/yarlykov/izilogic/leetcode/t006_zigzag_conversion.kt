@@ -1,5 +1,20 @@
 package s.yarlykov.izilogic.leetcode
 
+/**
+ * Зигзагом вывести строку на экран. Алгоритм такой:
+ * Сначала заполняем столбец, потом поднимаемся зюгой наверх. Потом снова столбец и снова
+ * зюгой и т.д.
+ */
+//  Результат:
+//
+//  A.....A.....A.....A.....A
+//  A....AA....AA....AA....AA
+//  A...A.A...A.A...A.A...A..
+//  A..A..A..A..A..A..A..A...
+//  A.A...A.A...A.A...A.A....
+//  AA....AA....AA....AA.....
+//  A.....A.....A.....A......
+
 fun zigZag(str: String, rows: Int): Array<CharArray> {
     require(rows >= 1)
 
@@ -35,7 +50,7 @@ fun zigZag(str: String, rows: Int): Array<CharArray> {
 }
 
 fun main() {
-    val chars = zigZag("PAYPALISHIRINGPAYPALISHIRINGPAYPALISHIRINGPAYPALISHIRING", 7)
+    val chars = zigZag(String(CharArray(50){'A'}), 7)
 
     chars.forEach {
         println(String(it))
