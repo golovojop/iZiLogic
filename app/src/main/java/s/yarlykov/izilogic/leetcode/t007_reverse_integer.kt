@@ -17,7 +17,7 @@ fun Int.pow(p: Int): Int = (this.toFloat().pow(p)).toInt()
  * [1]   2
  * [2]   1
  */
-fun decomposeInt(map: SortedMap<Int, Int>, n: Int, power: Int) {
+fun decomposeIntRecur(map: SortedMap<Int, Int>, n: Int, power: Int) {
     // Base case
     if (n == 0) return
 
@@ -25,51 +25,65 @@ fun decomposeInt(map: SortedMap<Int, Int>, n: Int, power: Int) {
     val r = n % 10
 
     map[power] = r
-    return decomposeInt(map, m, power + 1)
+    return decomposeIntRecur(map, m, power + 1)
 }
 
 /**
- * Обратная сборка
+ * Обратная сборка (рекурсивно)
  *
  * key  value
  * [0]   3
  * [1]   2       ->   123
  * [2]   1
  */
-fun composeInt(map: SortedMap<Int, Int>, power: Int): Int {
+fun composeIntRecur(map: SortedMap<Int, Int>, power: Int): Int {
     return map[power]?.let { n ->
-        (n * 10.pow(power)) + composeInt(map, power + 1)
+        (n * 10.pow(power)) + composeIntRecur(map, power + 1)
     } ?: 0
 }
 
 /**
- * Сборка из списка. Индекс элемента в списке - это его степень 10.
+ * Сборка из списка в цикле. Индекс элемента в списке - это его степень 10.
  */
-fun composeInt(list: List<Int>): Int {
-    return list.foldIndexed(0) { i, acc, n  ->
-        acc + (n * 10.pow(i))
-    }
+fun composeIntLoop(list: List<Int>): Int {
+    return list.foldIndexed(0) { index, acc, n  ->
 
+        // TODO: Проверить, что вписываемся в диапазон Int.MIN_VALUE <= N <= Int.MAX_VALUE
+        if(n != 0 && (acc > Int.MAX_VALUE/10 || acc < Int.MIN_VALUE/10)) return 0
+
+        acc + (n * 10.pow(index))
+    }
 }
 
-fun reverseInt(source: Int) : Int {
-
-    if(source == Int.MIN_VALUE || source == Int.MAX_VALUE) return 0
-
-    println("Original value: $source")
-
+/**
+ * Сложны способ с импользованием сторонних структур для разборки и сборки
+ */
+fun reverseIntHard(source: Int) : Int {
     val map = mutableMapOf<Int, Int>().toSortedMap()
-    decomposeInt(map, source, 0)
-
-    println("Decomposed map:")
-    map.entries.forEach {
-        println("${it.key}:${it.value}")
-    }
+    decomposeIntRecur(map, source, 0)
 
     val revList = map.entries.map { it.value }.reversed()
-    println("Compose back reversed list $revList: ${composeInt(revList)}")
+    return composeIntLoop(revList)
+}
 
-    return composeInt(revList)
+/**
+ * Самый простой вариант. Здесь число инвертируется в цикле без дополнительных структур.
+ */
+fun reverseIntSimple(source : Int) : Int {
+    var src = source
+    var result = 0
+
+    while(src != 0) {
+
+        // TODO: Проверить, что вписываемся в диапазон Int.MIN_VALUE <= result <= Int.MAX_VALUE
+        if(result > Int.MAX_VALUE/10 || result < Int.MIN_VALUE/10) return 0
+
+        val remainder = src % 10
+        result = result * 10 + remainder
+        src /= 10
+    }
+
+    return result
 }
 
 /**
@@ -83,5 +97,9 @@ fun reverseInt(source: Int) : Int {
  */
 
 fun main() {
-    val result = reverseInt(123456)
+//    reverseIntHard(/*123456*/Int.MAX_VALUE - 1_000_000_000)
+
+    val result = reverseIntSimple(1201)
+    println("result=$result")
+
 }
