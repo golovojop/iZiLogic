@@ -1,6 +1,9 @@
 package s.yarlykov.izilogic.leetcode
 
 /**
+ *
+ * https://leetcode.com/problems/zigzag-conversion/
+ *
  * Зигзагом вывести строку на экран. Алгоритм такой:
  * Сначала заполняем столбец, потом поднимаемся зюгой наверх. Потом снова столбец и снова
  * зюгой и т.д.
